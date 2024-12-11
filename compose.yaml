@@ -1,0 +1,25 @@
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  postgresql:
+    image: pgvector/pgvector:pg17
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+      - 'POSTGRES_HOST_AUTH_METHOD=trust'
+    networks:
+      - app-tier
+  
+  myapp:
+    build: ./app
+    networks:
+      - app-tier
+
+volumes:
+  postgresql_data:
+    driver: local
